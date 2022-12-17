@@ -10,23 +10,18 @@ import java.util.Map;
 public class _1_TwoSum {
     
     public int[] twoSum(int[] nums, int target) {
-        
-       int [] result = new int[2];
-        
         Map <Integer, Integer> map = new HashMap<>();
-        map.put (nums[0], 0);
-        for (int i=1; i<nums.length; i++){
-            
-            if (map.containsKey(target - nums[i])) { 
-            result [0] = map.get (target-nums[i]);
-                result [1] = i;
-                
-                return result;
+        int[] result = new int [2];
+
+        for (int i=0; i< nums.length; i++) {
+            if (map.containsKey(target - nums[i])){
+                result[0] = map.get(target - nums[i]);
+                result[1] = i;
+                break;
             }
-            map.put (nums[i], i);
+            map.put(nums[i], i);
         }
-        return null;
-  
+        return result;
     }
     
     public static void main(String[] args) {

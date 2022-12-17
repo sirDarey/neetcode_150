@@ -1,9 +1,10 @@
 package neetcode_150;
 
-import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 
 /**
  *
@@ -11,44 +12,53 @@ import java.util.Map;
  */
 public class _347_TopKFrequentElements {
     
-    public int[] topKFrequent(int[] nums, int k) {
-        Map <Integer, Integer> rawMap = new HashMap<>();
-        Map <Integer, List<Integer>> freqMap = new HashMap<>();
-        int [] result = new int [k];
-        
-        for (int i : nums) {
-            rawMap.put(i, rawMap.getOrDefault(i, 0)+1);
+    private class Data <Num, Freq> {
+        private final int num;
+        private final int freq;
+
+        public Data (int num, int freq) {
+            this.num = num;
+            this.freq = freq;
         }
+
+        public int getNum () {
+            return num;
+        }
+
+        public int getFreq () {
+            return freq;
+        }
+    }
+
+    public int[] topKFrequent(int[] nums, int k) {
+        Map <Integer, Integer> map = new HashMap<>();
+        for (int num : nums) 
+            map.put(num, map.getOrDefault(num, 0)+1);
         
-        rawMap.entrySet().forEach(x -> {
-            if (freqMap.containsKey(x.getValue())) {
-                freqMap.get(x.getValue()).add(x.getKey());
-            }else{
-                List <Integer> newList = new ArrayList<>();
-                newList.add(x.getKey());
-                freqMap.put(x.getValue(), newList);
-            }
+        Comparator <Data<Integer, Integer>> compareFreq = (Data<Integer, Integer> data1, Data<Integer, Integer> data2) -> {
+            if (data2.getFreq() > data1.getFreq())
+                return 1;
+            else
+                return -1;
+        };
+
+        Set <Data<Integer, Integer>> set = new TreeSet<>(compareFreq);
+
+        map.entrySet().forEach(x-> {
+            set.add(new Data(x.getKey(), x.getValue()));
         });
-        
-        int [] sortFreq = new int [freqMap.size()];
-        int i = 0;        
-        for (Map.Entry<Integer, List<Integer>> entry : freqMap.entrySet()) {
-            sortFreq[i] = entry.getKey();
+
+        int result [] = new int [k];
+        int i = 0;
+
+        for (Data <Integer, Integer> data : set) {
+            if (i == k)
+                break;
+            result[i] = data.getNum();
             i++;
         }
-        
-        int count = 0;
-        for (int j=sortFreq.length-1; j>=0; j--) {
-            for (int ans : freqMap.get(sortFreq[j])) {
-                result [count] = ans;
-                count ++;
-               
-                if (count == k)
-                    return result;
-            }
-        }
-         
-        return null;
+
+        return result;
     }
        
     public static void main(String[] args) {
