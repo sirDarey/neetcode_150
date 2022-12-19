@@ -1,5 +1,7 @@
 package neetcode_150;
 
+import java.util.Stack;
+
 /**
  *
  * @Sir Darey
@@ -7,27 +9,18 @@ package neetcode_150;
 public class _739_DailyTemperatures {
     
     public int[] dailyTemperatures(int[] temperatures) {
-        if (temperatures.length == 1)
-            return new int [] {0};
-        
         int n = temperatures.length;
-        int [] result = new int [n];
-        result[n-1] = 0;
-        
-        int max = temperatures[n-1];
-        
-        for (int i = n-2; i >=0; i--) {
-            if (temperatures[i] >= max) {
-                result[i] = 0;
-                max = temperatures[i];
-            } else {
-                int j = i+1;
-            
-                while (j < n && temperatures[j] <= temperatures[i]) 
-                    j++;
-            
-            result[i] = j-i;
-            }
+        int result [] = new int [n];
+
+        Stack <int []> stack = new Stack<>();
+        stack.push(new int[]{temperatures[n-1], n-1});
+
+        for (int i=n-2; i>=0; i--) {
+            while(!stack.isEmpty() && temperatures[i] >= stack.peek()[0])
+                stack.pop();
+            if (!stack.isEmpty())
+                result[i] = stack.peek()[1] - i;
+            stack.push(new int[]{temperatures[i], i});
         }
         return result;
     }

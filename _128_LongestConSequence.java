@@ -1,7 +1,7 @@
 package neetcode_150;
 
-import java.util.HashSet;
 import java.util.Set;
+import java.util.TreeSet;
 
 /**
  *
@@ -10,56 +10,38 @@ import java.util.Set;
 public class _128_LongestConSequence {
     
     public int longestConsecutive(int[] nums) {
-        Set <Integer> set = new HashSet();
+        Set <Integer> set = new TreeSet<>();
+        for (int num : nums)
+            set.add(num);
         
-        for(int i : nums){
-            set.add(i);
+        int prev = 0;
+        for (int num : set) {
+            prev = num;
+            break;
         }
-        
-        int maxSoFar = 0;
-        
-        for(int i : nums){
-            
-            //check if nums[i] id present in set or not
-            //since after checking in set we remove the element from 
-            //set, there is no double calculation for same sequence 
-            if(set.contains(i)){
-                set.remove(i);
-                
-                int previous = i-1;
-                int after = i+1;
-                int tempMax = 1;
-                
-                //check both ways from nums[i] and calculate 
-                //tempL. since we are removing elements from 
-                //set we only calculate once for every sequence.
-                
-                while(set.contains(previous)){
-                    set.remove(previous);
-                    previous--;
-                    tempMax++;
-                }
-                
-                while(set.contains(after)){
-                    set.remove(after);
-                    after++;
-                    tempMax++;
-                }
-                
-                
-                maxSoFar = Math.max(maxSoFar, tempMax);
-                
+
+        int result = 0, temp = 0;
+        --prev; 
+
+        for (int current : set){
+            if (current - prev == 1) 
+                temp++;
+            else {
+                result = Math.max(result, temp);
+                temp = 1; 
             }
+            prev = current;
         }
-        
-        return maxSoFar;
+
+        return Math.max(result, temp);
+
     }
     
     
     public static void main(String[] args) {
         _128_LongestConSequence solution = new _128_LongestConSequence();
         
-        int [] nums = {0,7,6,1,3,2};
+        int [] nums = {5,0,8,7,6,1,3,2,9};
         
         System.out.println(solution.longestConsecutive(nums));
     }

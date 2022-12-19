@@ -7,16 +7,15 @@ package neetcode_150;
 public class _121_maxStockProfit {
     
     public int maxProfit(int[] prices) {
-       if (prices.length < 2)
-           return 0;
-       
-        int max = 0, least = Integer.MAX_VALUE;
-        for (int i=0; i < prices.length; i++) {
-            
-            least = Math.min(least, prices[i]);
-            max =   Math.max(max, prices[i] - least);
-        }          
-        return max;
+        int n = prices.length;
+        int minCP = prices[0];
+        prices[0] = 0;
+
+        for (int i=1; i<n; i++) {
+            minCP = Math.min(minCP, prices[i]);
+            prices[i] = Math.max(prices[i-1], prices[i] - minCP);
+        }
+        return prices[n-1];
     }
        
     public static void main(String[] args) {
